@@ -70,11 +70,7 @@ const Dashboard = ({ company, onNavigate }) => {
     recentInvoices: []
   });
 
-  useEffect(() => {
-  fetchDashboardData();
-}, [fetchDashboardData]);
-
- const fetchDashboardData = useCallback(async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       const [invoicesRes, partiesRes, goodsRes] = await Promise.all([
         invoiceAPI.getAll(),
@@ -116,6 +112,10 @@ const Dashboard = ({ company, onNavigate }) => {
       console.error('Error fetching dashboard data:', error);
     }
   }, []);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
