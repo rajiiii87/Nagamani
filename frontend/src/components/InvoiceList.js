@@ -9,7 +9,7 @@ const InvoiceList = () => {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [showPrintView, setShowPrintView] = useState(false);
   const [message, setMessage] = useState('');
-  const [paperSize] = useState('A4');
+  const paperSize = 'A4';
 
   function getCurrentFinancialYear() {
     const today = new Date();
@@ -45,8 +45,7 @@ const InvoiceList = () => {
 
   const handlePrint = async (id) => {
     try {
-      const response = await invoiceAPI.getById(id);
-      const invoice = response.data;
+      const { data: invoice } = await invoiceAPI.getById(id);
       setSelectedInvoice(invoice);
       setShowPrintView(true);
     } catch (error) {
