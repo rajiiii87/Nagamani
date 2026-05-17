@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './styles/global.css';
 import Layout from './components/Layout';
 import CompanyProfile from './components/CompanyProfile';
@@ -207,7 +207,7 @@ const Dashboard = ({ company, onNavigate }) => {
           <div className="dashboard-section">
             <div className="section-header">
               <h2 className="section-title">Recent Invoices</h2>
-              <a href="#" className="section-link">View All →</a>
+              <button type="button" className="section-link">View All →</button>
             </div>
             <div className="recent-invoices">
               {stats.recentInvoices.length === 0 ? (
@@ -255,18 +255,14 @@ const Reports = ({ company }) => {
   const [reportData, setReportData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchReportData();
-  }, [selectedMonth]);
-
-  const fetchReportData = async () => {
+  const fetchReportData = useCallback(async () => {
     setLoading(true);
     try {
       const response = await invoiceAPI.getAll();
       const invoices = response.data || [];
 
       // Filter out cancelled invoices and filter by selected month
-      const monthInvoices = invoices.filter(inv => 
+      const monthInvoices = invoices.filter(inv =>
         inv.status !== 'cancelled' && (inv.invoiceDate || '').slice(0, 7) === selectedMonth
       );
 
@@ -296,7 +292,11 @@ const Reports = ({ company }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedMonth]);
+
+  useEffect(() => {
+    fetchReportData();
+  }, [fetchReportData]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {

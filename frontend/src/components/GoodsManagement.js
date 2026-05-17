@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { goodsAPI } from '../utils/api';
 
 const GoodsManagement = () => {
@@ -19,18 +19,18 @@ const GoodsManagement = () => {
 
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    fetchGoods();
-  }, [searchTerm]);
-
-  const fetchGoods = async () => {
+  const fetchGoods = useCallback(async () => {
     try {
       const response = await goodsAPI.getAll(searchTerm);
       setGoods(response.data);
     } catch (error) {
       console.error('Error fetching goods:', error);
     }
-  };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    fetchGoods();
+  }, [fetchGoods]);
 
   const validateForm = () => {
     const newErrors = {};
