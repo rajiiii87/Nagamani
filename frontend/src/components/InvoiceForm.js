@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { invoiceAPI, partyAPI, goodsAPI, companyAPI } from '../utils/api';
-import { formatCurrency, numberToWords, getCurrentFinancialYear } from '../utils/helpers';
+import { formatCurrency, numberToWords } from '../utils/helpers';
 
 const InvoiceForm = () => {
   const [formData, setFormData] = useState({
@@ -270,7 +270,6 @@ const InvoiceForm = () => {
             </thead>
             <tbody>
               {formData.lineItems.map((item, index) => {
-                const selectedGoods = goods.find(g => g._id === item.goodsId);
                 const itemAmount = (item.quantity || 0) * (item.rate || 0);
 
                 return (

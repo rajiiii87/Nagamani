@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { partyAPI } from '../utils/api';
 import { validateGSTIN, validatePhone, validateEmail } from '../utils/helpers';
 
@@ -23,18 +23,18 @@ const PartyManagement = () => {
 
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    fetchParties();
-  }, [searchTerm]);
-
-  const fetchParties = async () => {
+  const fetchParties = useCallback(async () => {
     try {
       const response = await partyAPI.getAll(searchTerm);
       setParties(response.data);
     } catch (error) {
       console.error('Error fetching parties:', error);
     }
-  };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    fetchParties();
+  }, [fetchParties]);
 
   const validateForm = () => {
     const newErrors = {};

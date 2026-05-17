@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { invoiceAPI } from '../utils/api';
 import { formatCurrency } from '../utils/helpers';
 
@@ -9,7 +9,7 @@ const InvoiceList = () => {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [showPrintView, setShowPrintView] = useState(false);
   const [message, setMessage] = useState('');
-  const [paperSize, setPaperSize] = useState('A4');
+  const [paperSize] = useState('A4');
 
   function getCurrentFinancialYear() {
     const today = new Date();
@@ -18,11 +18,7 @@ const InvoiceList = () => {
     return month >= 3 ? `${year}-${String(year + 1).slice(-2)}` : `${year - 1}-${String(year).slice(-2)}`;
   }
 
-  useEffect(() => {
-    fetchInvoices();
-  }, [filter]);
-
-  const fetchInvoices = async () => {
+  const fetchInvoices = useCallback(async () => {
     setLoading(true);
     try {
       const query = {
@@ -41,7 +37,11 @@ const InvoiceList = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter]);
+
+  useEffect(() => {
+    fetchInvoices();
+  }, [fetchInvoices]);
 
   const handlePrint = async (id) => {
     try {
@@ -57,7 +57,7 @@ const InvoiceList = () => {
   const handleDownloadPDF = async (id) => {
     try {
       setMessage('Generating PDF...');
-      const response = await invoiceAPI.generatePDF(id);
+      await invoiceAPI.generatePDF(id);
       setMessage('PDF downloaded successfully');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
