@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import InvoiceForm from './components/InvoiceForm';
 import './styles/global.css';
 import Layout from './components/Layout';
 import CompanyProfile from './components/CompanyProfile';
 import PartyManagement from './components/PartyManagement';
 import GoodsManagement from './components/GoodsManagement';
-import InvoiceForm from './components/InvoiceForm';
 import InvoiceList from './components/InvoiceList';
 import { companyAPI, invoiceAPI, partyAPI, goodsAPI } from './utils/api';
 
@@ -71,10 +71,10 @@ const Dashboard = ({ company, onNavigate }) => {
   });
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  fetchDashboardData();
+}, [fetchDashboardData]);
 
-  const fetchDashboardData = async () => {
+ const fetchDashboardData = useCallback(async () => {
     try {
       const [invoicesRes, partiesRes, goodsRes] = await Promise.all([
         invoiceAPI.getAll(),
@@ -115,7 +115,7 @@ const Dashboard = ({ company, onNavigate }) => {
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }
-  };
+  }, []);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
